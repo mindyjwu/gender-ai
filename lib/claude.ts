@@ -1,13 +1,21 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { z } from 'zod'
 
-const DEFAULT_MODEL = 'claude-sonnet-4-5'
+const DEFAULT_MODEL = 'claude-sonnet-4-6'
+
+export const AVAILABLE_MODELS = [
+  { id: 'claude-haiku-4-5-20251001', label: 'Haiku 4.5', description: 'Fastest responses' },
+  { id: 'claude-sonnet-4-6', label: 'Sonnet 4.6', description: 'Balanced speed & quality' },
+  { id: 'claude-sonnet-4-5', label: 'Sonnet 4.5', description: 'High quality, slower' },
+  { id: 'claude-opus-4-8', label: 'Opus 4.8', description: 'Most capable, slowest' },
+] as const
 
 function client() {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 }
 
-function model() {
+function resolveModel(modelId?: string) {
+  if (modelId && AVAILABLE_MODELS.some(m => m.id === modelId)) return modelId
   return process.env.ANTHROPIC_MODEL ?? DEFAULT_MODEL
 }
 
@@ -16,6 +24,7 @@ export async function callStructured<T>(
   system: string,
   schema: z.ZodType<T>,
   toolName = 'structured_output',
+  modelId?: string,
 ): Promise<T> {
   const jsonSchema = z.toJSONSchema(schema) as Anthropic.Tool['input_schema']
 
@@ -27,8 +36,8 @@ export async function callStructured<T>(
         : `${prompt}\n\nPrevious attempt failed validation: ${lastError}\nPlease correct and try again.`
 
     const response = await client().messages.create({
-      model: model(),
-      max_tokens: 4096,
+      model: resolveModel(modelId),
+      max_tokens: 1024,
       system,
       messages: [{ role: 'user', content: userContent }],
       tools: [{ name: toolName, description: 'Return structured output.', input_schema: jsonSchema }],
@@ -53,9 +62,9 @@ export async function callStructured<T>(
   throw new Error(`callStructured failed after 3 attempts: ${lastError}`)
 }
 
-export async function call(prompt: string, system?: string): Promise<string> {
+export async function call(prompt: string, system?: string, modelId?: string): Promise<string> {
   const response = await client().messages.create({
-    model: model(),
+    model: resolveModel(modelId),
     max_tokens: 2048,
     ...(system ? { system } : {}),
     messages: [{ role: 'user', content: prompt }],

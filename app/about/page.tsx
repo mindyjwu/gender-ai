@@ -3,90 +3,93 @@ import Link from 'next/link'
 export default function AboutPage() {
   return (
     <div className="flex flex-col min-h-screen bg-[var(--background)]">
-      <nav className="border-b border-gray-200">
-        <div className="max-w-3xl mx-auto px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="text-lg font-bold gradient-text">GenAI</Link>
-          <div className="flex items-center gap-5">
+      <nav className="border-b border-gray-200/60">
+        <div className="max-w-5xl mx-auto px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <Link href="/" className="text-xl font-bold gradient-text tracking-tight">GenAI</Link>
             <Link href="/about" className="text-sm font-medium text-gray-900">About</Link>
-            <Link href="/auth" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">Sign in</Link>
           </div>
+          <Link href="/auth" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Sign in</Link>
         </div>
       </nav>
 
-      <main className="flex-1 max-w-2xl mx-auto px-6 py-16">
-        <article className="flex flex-col gap-10">
-          {/* Title */}
+      <main className="flex-1 max-w-2xl mx-auto px-8 py-20">
+        <article className="flex flex-col gap-12">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-3">About GenAI</h1>
-            <p className="text-gray-400 text-sm">The name. The idea. The why.</p>
+            <p className="text-sm font-medium text-violet-500 tracking-wide uppercase mb-3">About the project</p>
+            <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-4">What is GenAI?</h1>
+            <p className="text-base text-gray-500 leading-relaxed">
+              A play on words, a mirror for how you communicate, and a bridge between linguistics research and everyday conversation.
+            </p>
           </div>
 
-          {/* The name */}
           <section className="flex flex-col gap-3">
-            <h2 className="text-lg font-semibold text-gray-900">Why "GenAI"?</h2>
+            <h2 className="text-lg font-semibold text-gray-900">The name</h2>
             <p className="text-sm text-gray-600 leading-relaxed">
-              You've heard "GenAI" everywhere — it's shorthand for <em>generative AI</em>, the technology behind tools like ChatGPT and Claude. But we thought: what if we took the "Gen" in a different direction?
-            </p>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              <strong>GenAI</strong> = <strong>Gen</strong>der + <strong>AI</strong>. Instead of just generating text, we're exploring how gender shapes the way we communicate — and what your preferences say about you.
-            </p>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              Same abbreviation. Completely different meaning. That's the point.
+              &ldquo;GenAI&rdquo; is everywhere as shorthand for <em>generative AI</em>. We took the &ldquo;Gen&rdquo; in a different direction: <strong>Gen</strong>der + <strong>AI</strong>. Instead of just generating text, we explore how gender shapes communication &mdash; and what your preferences reveal about you.
             </p>
           </section>
 
-          {/* What it does */}
           <section className="flex flex-col gap-3">
-            <h2 className="text-lg font-semibold text-gray-900">What GenAI does</h2>
+            <h2 className="text-lg font-semibold text-gray-900">How it works</h2>
             <p className="text-sm text-gray-600 leading-relaxed">
-              When you ask GenAI a question, you get two responses — one from <span className="text-violet-500 font-medium">Kyle</span> and one from <span className="text-sky-500 font-medium">Kylie</span>. They're both answering the same question with equal knowledge and thoughtfulness, but their <em>communication styles</em> are different.
+              When you ask a question, you receive two responses &mdash; one from <span className="text-violet-600 font-medium">Kyle</span> and one from <span className="text-sky-600 font-medium">Kylie</span>. Both are equally knowledgeable and thoughtful. The difference is <em>how</em> they communicate.
             </p>
             <p className="text-sm text-gray-600 leading-relaxed">
-              Kyle tends to be more direct, solution-oriented, and concise. Kylie tends to be more empathetic, collaborative, and nuanced. These aren't stereotypes — they're patterns documented by decades of linguistics research.
+              Kyle tends toward directness, solution-orientation, and concision. Kylie tends toward empathy, collaboration, and nuance. These reflect patterns documented by decades of linguistics research &mdash; not stereotypes.
             </p>
             <p className="text-sm text-gray-600 leading-relaxed">
-              You pick the response you prefer. After a few rounds, GenAI can tell you something interesting about how you like to communicate — are you drawn to directness or empathy? Action or context? Efficiency or connection?
+              You pick the response you prefer. After several rounds, GenAI surfaces insights about your communication style: are you drawn to directness or empathy? Action or context? Efficiency or connection?
             </p>
           </section>
 
-          {/* The research */}
-          <section className="flex flex-col gap-3">
-            <h2 className="text-lg font-semibold text-gray-900">The research behind it</h2>
+          <section className="flex flex-col gap-4">
+            <h2 className="text-lg font-semibold text-gray-900">The research</h2>
             <p className="text-sm text-gray-600 leading-relaxed">
-              GenAI's responses are grounded in real linguistics and communication research, including:
+              GenAI&apos;s response styles are grounded in real linguistics and communication research:
             </p>
-            <ul className="text-sm text-gray-600 leading-relaxed flex flex-col gap-2 pl-4">
-              <li><strong>Deborah Tannen</strong> — <em>You Just Don't Understand</em> (1990). Pioneered the concepts of "rapport talk" vs. "report talk" in gendered communication.</li>
-              <li><strong>Carol Gilligan</strong> — <em>In a Different Voice</em> (1982). Explored how men and women frame moral decisions through different lenses — justice vs. care.</li>
-              <li><strong>Robin Lakoff</strong> — <em>Language and Woman's Place</em> (1975). Early research on how language patterns differ across genders.</li>
-              <li><strong>Penelope Eckert & Sally McConnell-Ginet</strong> — Research on hedging, inclusive language, and collaborative communication styles.</li>
-              <li><strong>Janet Holmes</strong> — Studies on apology behavior, compliment patterns, and feedback styles across genders.</li>
-            </ul>
+            <div className="flex flex-col gap-3">
+              {[
+                { author: 'Deborah Tannen', work: 'You Just Don\'t Understand (1990)', note: 'Pioneered "rapport talk" vs. "report talk" in gendered communication.' },
+                { author: 'Carol Gilligan', work: 'In a Different Voice (1982)', note: 'Explored justice vs. care frameworks in moral decision-making.' },
+                { author: 'Robin Lakoff', work: 'Language and Woman\'s Place (1975)', note: 'Early research on gendered language patterns.' },
+                { author: 'Eckert & McConnell-Ginet', work: 'Language and Gender (2003)', note: 'Research on hedging, inclusive language, and collaborative styles.' },
+                { author: 'Janet Holmes', work: 'Women, Men and Politeness (1995)', note: 'Studies on apology, compliment, and feedback patterns across genders.' },
+              ].map(r => (
+                <div key={r.author} className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                  <p className="text-sm font-medium text-gray-900">{r.author}</p>
+                  <p className="text-xs text-violet-500 mt-0.5">{r.work}</p>
+                  <p className="text-xs text-gray-400 mt-1">{r.note}</p>
+                </div>
+              ))}
+            </div>
           </section>
 
-          {/* What it's not */}
           <section className="flex flex-col gap-3">
-            <h2 className="text-lg font-semibold text-gray-900">What GenAI is not</h2>
+            <h2 className="text-lg font-semibold text-gray-900">What this is not</h2>
             <p className="text-sm text-gray-600 leading-relaxed">
-              This isn't about who communicates "better." There's no right or wrong answer when you pick between Kyle and Kylie. Both styles are effective, valuable, and widely used by people of all genders.
-            </p>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              The point is self-awareness. Most of us have never thought about <em>why</em> we prefer the way someone says something over what they actually say. GenAI gives you a mirror for that.
+              This is not about who communicates &ldquo;better.&rdquo; There is no right answer. Both styles are effective, valuable, and used by people of all genders. The point is self-awareness &mdash; understanding <em>why</em> you prefer how something is said, not just what is said.
             </p>
           </section>
 
-          {/* CTA */}
-          <div className="pt-4 border-t border-gray-200 flex items-center justify-between">
-            <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">← Back home</Link>
+          <div className="pt-6 border-t border-gray-100 flex items-center justify-between">
+            <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">&larr; Home</Link>
             <Link
               href="/auth"
-              className="bg-gray-900 text-white font-semibold text-sm py-2.5 px-6 rounded-lg hover:bg-gray-800 transition-colors"
+              className="bg-gray-900 text-white font-semibold text-sm py-2.5 px-8 rounded-xl hover:bg-gray-800 transition-colors shadow-sm"
             >
-              Try GenAI →
+              Try GenAI
             </Link>
           </div>
         </article>
       </main>
+
+      <footer className="border-t border-gray-100 py-6">
+        <div className="max-w-5xl mx-auto px-8 flex items-center justify-between">
+          <p className="text-xs text-gray-400">GenAI &mdash; Gender + AI</p>
+          <a href="https://en.wikipedia.org/wiki/Language_and_gender" target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">Research</a>
+        </div>
+      </footer>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { callStructured } from '@/lib/claude'
+import { callStructured, call } from '@/lib/claude'
 import { serverClient } from '@/lib/supabase-server'
 
 const DualResponseSchema = z.object({
@@ -12,10 +12,11 @@ const DualResponseSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
-    const { conversation_id, user_prompt, user_id } = await req.json() as {
+    const { conversation_id, user_prompt, user_id, model } = await req.json() as {
       conversation_id?: string
       user_prompt: string
       user_id: string
+      model?: string
     }
 
     if (!user_prompt?.trim()) {
@@ -42,9 +43,15 @@ export async function POST(req: NextRequest) {
     // Create or fetch conversation
     let convId = conversation_id
     if (!convId) {
+      const title = await call(
+        `Summarize this message in 3-5 words as a short chat title. No quotes, no punctuation, just the title:\n\n"${user_prompt}"`,
+        'You generate ultra-short chat titles. Respond with ONLY the 3-5 word title, nothing else.',
+        'claude-haiku-4-5-20251001',
+      ).then(t => t.trim()).catch(() => user_prompt.slice(0, 40))
+
       const { data: conv, error } = await db
         .from('conversations')
-        .insert({ user_id, title: user_prompt.slice(0, 60) })
+        .insert({ user_id, title })
         .select('id')
         .single()
       if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -68,6 +75,9 @@ export async function POST(req: NextRequest) {
     const turnNumber = (history?.length ?? 0) + 1
 
     const system = `You generate two responses to every user message — one from "Kyle" and one from "Kylie." They represent different communication styles grounded in linguistics research. Both are equally smart, helpful, and thoughtful — the difference is HOW they communicate, not WHAT they know.
+
+## IMPORTANT — Response length:
+Keep responses concise by default — 2-4 sentences. Only give longer, more detailed responses when the user explicitly asks for more depth, detail, or elaboration (e.g. "tell me more," "can you explain further," "go deeper on that"). Match the depth of your answer to the specificity of their question.
 
 ## Research context:
 ${ragContext}
@@ -97,6 +107,7 @@ Both responses must fully answer the question. Make them feel like two real peop
       system,
       DualResponseSchema,
       'dual_response',
+      model,
     )
 
     // Save message
