@@ -2,7 +2,9 @@
 
 Ask anything. Get two answers side by side — one from Kyle, one from Kylie, two AI personas with distinct communication styles. Which one you pick, over enough questions, builds into a report on how you actually prefer to communicate.
 
-*Screenshot*
+**Live demo:** [gender-ai.vercel.app](https://gender-ai.vercel.app)
+
+![GenAI — two AI voices, side by side](docs/screenshot-landing.png)
 
 ## The question behind it
 
