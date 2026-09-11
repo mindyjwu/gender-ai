@@ -432,10 +432,10 @@ export default function ChatPage() {
               </p>
               <div className="flex flex-wrap gap-2 justify-center mt-2">
                 {[
-                  'How should I negotiate a raise?',
-                  'My friend is going through a hard time',
-                  'Should I change careers at 30?',
-                  'How do I deal with a difficult coworker?',
+                  'How do I grow in my career without burning out?',
+                  'What\'s the best way to de-stress after work?',
+                  'Recommend a book or podcast based on how I communicate',
+                  'How do I become a better listener on my team?',
                 ].map(q => (
                   <button
                     key={q}
