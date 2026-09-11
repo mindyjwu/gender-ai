@@ -25,6 +25,7 @@ export async function callStructured<T>(
   schema: z.ZodType<T>,
   toolName = 'structured_output',
   modelId?: string,
+  maxTokens = 1024,
 ): Promise<T> {
   const jsonSchema = z.toJSONSchema(schema) as Anthropic.Tool['input_schema']
 
@@ -37,12 +38,17 @@ export async function callStructured<T>(
 
     const response = await client().messages.create({
       model: resolveModel(modelId),
-      max_tokens: 1024,
+      max_tokens: maxTokens,
       system,
       messages: [{ role: 'user', content: userContent }],
       tools: [{ name: toolName, description: 'Return structured output.', input_schema: jsonSchema }],
       tool_choice: { type: 'tool', name: toolName },
     })
+
+    if (response.stop_reason === 'max_tokens') {
+      lastError = `Output truncated at ${maxTokens} tokens — respond more concisely`
+      continue
+    }
 
     const block = response.content.find(b => b.type === 'tool_use')
     if (!block || block.type !== 'tool_use') {

@@ -18,6 +18,7 @@ type Summary = {
   summary: string
   style_label: string
   traits: string[]
+  report_id: string | null
 } | null
 
 type Conversation = {
@@ -226,6 +227,7 @@ export default function ChatPage() {
         summary: data.summary,
         style_label: data.communication_style?.primary_style ?? '',
         traits: data.personality_insights?.values_in_communication ?? [],
+        report_id: data.report_id ?? null,
       })
       setInsightsDismissedAtPick(null)
     } catch (err) {
@@ -531,6 +533,14 @@ export default function ChatPage() {
                     <span key={t} className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{t}</span>
                   ))}
                 </div>
+              )}
+              {summary.report_id && (
+                <Link
+                  href={`/report/${summary.report_id}`}
+                  className="self-start text-xs font-semibold text-violet-600 hover:text-violet-800 transition-colors"
+                >
+                  View full report &rarr;
+                </Link>
               )}
             </div>
           )}

@@ -88,23 +88,23 @@ User chose: ${m.user_pick ?? 'no pick'}`
     const malePicks = pickedMessages.filter(m => m.user_pick === 'male').length
     const femalePicks = pickedMessages.filter(m => m.user_pick === 'female').length
 
-    const prompt = `Analyze this user's conversation choices and generate a detailed communication style report.
+    const prompt = `Analyze this user's conversation choices and generate a communication style report.
 
 ## Conversation log:
 ${conversationLog}
 
 ## Pick summary:
 - Total picks: ${pickedMessages.length}
-- Male-style picks: ${malePicks} (${((malePicks / pickedMessages.length) * 100).toFixed(0)}%)
-- Female-style picks: ${femalePicks} (${((femalePicks / pickedMessages.length) * 100).toFixed(0)}%)
+- Report-register picks (Kyle / "male"): ${malePicks} (${((malePicks / pickedMessages.length) * 100).toFixed(0)}%)
+- Rapport-register picks (Kylie / "female"): ${femalePicks} (${((femalePicks / pickedMessages.length) * 100).toFixed(0)}%)
 
-Generate a comprehensive, insightful, and fun report. The spectrum_position should be 0 = fully masculine-style preference, 100 = fully feminine-style preference, 50 = balanced. All other scores are 0-100 where higher means more of that trait.
+The spectrum_position is 0 = strong preference for the report register (direct, declarative, solution-first), 100 = strong preference for the rapport register (acknowledging, hedged, relationship-first), 50 = balanced. All other scores are 0-100 where higher means more of that trait. In pick_breakdown.total_picks, male_picks and female_picks, copy the numbers above exactly. Use "male" or "female" for preferred_style values.
 
-Be specific about WHICH responses they chose and WHY that reveals something about their communication preferences. Don't be generic — reference their actual choices.`
+Be specific about WHICH responses they chose and WHY that reveals something about their preferences — reference their actual choices, not generalities. Keep each text field to 1-3 sentences and list at most 4 topic_preferences and 5 traits.`
 
-    const system = `You are a communication style analyst. Based on a user's choices between masculine and feminine communication styles, generate an insightful and engaging report about their communication preferences. Be specific, reference their actual choices, and make it feel personalized. The tone should be warm, insightful, and fun — like a really good personality test result. Never be judgmental — all styles are valid.`
+    const system = `You are a communication style analyst. The user chose between two responses per turn: one written in an assertive "report" register and one in an affiliative "rapport" register. These registers are ends of a continuum every speaker uses; linguistics research finds the average gender difference on them is small, so the labels "male" and "female" are style labels only. Describe the user's PREFERENCE for a register. Never infer, guess or comment on the user's own gender. Be specific, reference their actual choices, and make it feel personalized — warm, insightful and fun, like a really good personality test result. Never be judgmental: both registers are effective.`
 
-    const report = await callStructured(prompt, system, ReportSchema, 'generate_report')
+    const report = await callStructured(prompt, system, ReportSchema, 'generate_report', undefined, 4096)
 
     // Save report
     const { data, error } = await db

@@ -4,16 +4,30 @@ import { serverClient } from '@/lib/supabase-server'
 
 type Params = Promise<{ id: string }>
 
+function clamp(n: number) {
+  return Math.max(0, Math.min(100, Math.round(n)))
+}
+
 function BarChart({ label, value, color }: { label: string; value: number; color: string }) {
+  const v = clamp(value)
   return (
     <div>
       <div className="flex justify-between mb-1">
-        <span className="text-xs text-white/60 font-medium">{label}</span>
-        <span className="text-xs text-white/40">{value}%</span>
+        <span className="text-xs text-gray-600 font-medium">{label}</span>
+        <span className="text-xs text-gray-400">{v}%</span>
       </div>
-      <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-        <div className={`h-full rounded-full ${color}`} style={{ width: `${value}%` }} />
+      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+        <div className={`h-full rounded-full ${color}`} style={{ width: `${v}%` }} />
       </div>
+    </div>
+  )
+}
+
+function Card({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+      <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">{title}</h2>
+      {children}
     </div>
   )
 }
@@ -62,153 +76,152 @@ export default async function ReportPage({ params }: { params: Params }) {
 
   const malePercent = breakdown.total_picks > 0 ? Math.round((breakdown.male_picks / breakdown.total_picks) * 100) : 50
   const femalePercent = 100 - malePercent
+  const spectrum = clamp(style.spectrum_position)
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="border-b border-white/10">
-        <div className="max-w-3xl mx-auto px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="text-lg font-bold gradient-text">GenAI</Link>
-          <Link href="/chat" className="text-sm text-white/50 hover:text-white/80 transition-colors">New conversation →</Link>
+    <div className="flex flex-col min-h-screen bg-[var(--background)]">
+      <nav className="border-b border-gray-200/60">
+        <div className="max-w-5xl mx-auto px-8 h-16 flex items-center justify-between">
+          <Link href="/" className="text-xl font-bold gradient-text tracking-tight">GenAI</Link>
+          <Link href="/chat" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Back to chat &rarr;</Link>
         </div>
-      </header>
+      </nav>
 
-      <main className="max-w-3xl w-full mx-auto px-6 py-10 flex flex-col gap-10">
+      <main className="max-w-3xl w-full mx-auto px-8 py-16 flex flex-col gap-8">
         {/* Title */}
         <div className="text-center">
-          <p className="text-sm font-semibold text-purple-400 uppercase tracking-widest mb-2">Your Report</p>
-          <h1 className="text-4xl font-bold gradient-text mb-4">Communication Style Analysis</h1>
-          <p className="text-white/50 text-sm max-w-lg mx-auto leading-relaxed">{report.summary}</p>
+          <p className="text-sm font-medium text-violet-500 tracking-wide uppercase mb-3">Your report</p>
+          <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-4">Communication Style Analysis</h1>
+          <p className="text-base text-gray-500 max-w-lg mx-auto leading-relaxed">{report.summary}</p>
         </div>
 
         {/* Spectrum */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-          <h2 className="text-xs font-bold text-white/40 uppercase tracking-wider mb-4">Style Spectrum</h2>
+        <Card title="Style spectrum">
           <div className="flex items-center gap-3 mb-3">
-            <span className="text-xs text-indigo-400 font-bold">♂ Masculine</span>
-            <div className="flex-1 h-4 bg-white/10 rounded-full overflow-hidden relative">
+            <span className="text-xs text-violet-600 font-semibold whitespace-nowrap">Kyle · report</span>
+            <div className="flex-1 h-3 bg-gray-100 rounded-full relative">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
-                style={{ width: `${style.spectrum_position}%` }}
+                className="h-full rounded-full bg-gradient-to-r from-violet-500 to-sky-500"
+                style={{ width: `${spectrum}%` }}
               />
               <div
-                className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full border-2 border-purple-500 shadow-lg"
-                style={{ left: `calc(${style.spectrum_position}% - 8px)` }}
+                className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full border-2 border-gray-900 shadow"
+                style={{ left: `calc(${spectrum}% - 8px)` }}
               />
             </div>
-            <span className="text-xs text-pink-400 font-bold">Feminine ♀</span>
+            <span className="text-xs text-sky-600 font-semibold whitespace-nowrap">rapport · Kylie</span>
           </div>
-          <p className="text-sm text-white/60 text-center mt-3">{style.primary_style}</p>
-          <p className="text-xs text-white/40 text-center mt-1">{style.description}</p>
-        </div>
+          <p className="text-sm font-medium text-gray-900 text-center mt-4">{style.primary_style}</p>
+          <p className="text-sm text-gray-500 text-center mt-1 leading-relaxed">{style.description}</p>
+        </Card>
 
         {/* Pick breakdown */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-          <h2 className="text-xs font-bold text-white/40 uppercase tracking-wider mb-4">Your Picks</h2>
-          <div className="flex items-center gap-4 mb-4">
-            <div className="flex-1 flex items-center gap-3">
-              <div className="flex-1">
-                <div className="flex h-8 rounded-full overflow-hidden">
-                  <div className="bg-indigo-500/70 flex items-center justify-center" style={{ width: `${malePercent}%` }}>
-                    <span className="text-xs font-bold text-white">{malePercent}%</span>
-                  </div>
-                  <div className="bg-pink-500/70 flex items-center justify-center" style={{ width: `${femalePercent}%` }}>
-                    <span className="text-xs font-bold text-white">{femalePercent}%</span>
-                  </div>
-                </div>
+        <Card title="Your picks">
+          <div className="flex h-8 rounded-full overflow-hidden mb-2">
+            {malePercent > 0 && (
+              <div className="bg-violet-500 flex items-center justify-center" style={{ width: `${malePercent}%` }}>
+                <span className="text-xs font-semibold text-white">{malePercent}%</span>
               </div>
-            </div>
+            )}
+            {femalePercent > 0 && (
+              <div className="bg-sky-500 flex items-center justify-center" style={{ width: `${femalePercent}%` }}>
+                <span className="text-xs font-semibold text-white">{femalePercent}%</span>
+              </div>
+            )}
           </div>
-          <div className="flex justify-between text-xs text-white/40 mb-4">
-            <span>{breakdown.male_picks} masculine picks</span>
-            <span>{breakdown.female_picks} feminine picks</span>
+          <div className="flex justify-between text-xs text-gray-400 mb-4">
+            <span>{breakdown.male_picks} Kyle pick{breakdown.male_picks === 1 ? '' : 's'}</span>
+            <span>{breakdown.female_picks} Kylie pick{breakdown.female_picks === 1 ? '' : 's'}</span>
           </div>
-          <p className="text-sm text-white/60 leading-relaxed">{breakdown.pattern_analysis}</p>
+          <p className="text-sm text-gray-600 leading-relaxed">{breakdown.pattern_analysis}</p>
 
-          {/* Topic preferences */}
-          {breakdown.topic_preferences.length > 0 && (
-            <div className="mt-4 flex flex-col gap-2">
-              <h3 className="text-xs font-bold text-white/30 uppercase tracking-wider">By Topic</h3>
-              {breakdown.topic_preferences.map((tp, i) => (
-                <div key={i} className="flex items-start gap-3 bg-white/5 rounded-lg px-3 py-2">
-                  <span className={`text-xs font-bold mt-0.5 ${tp.preferred_style === 'male' ? 'text-indigo-400' : 'text-pink-400'}`}>
-                    {tp.preferred_style === 'male' ? '♂' : '♀'}
-                  </span>
-                  <div>
-                    <span className="text-xs font-semibold text-white/70">{tp.topic}</span>
-                    <p className="text-xs text-white/40">{tp.insight}</p>
+          {breakdown.topic_preferences?.length > 0 && (
+            <div className="mt-5 flex flex-col gap-2">
+              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">By topic</h3>
+              {breakdown.topic_preferences.map((tp, i) => {
+                const kyle = tp.preferred_style === 'male'
+                return (
+                  <div key={i} className="flex items-start gap-3 bg-gray-50 rounded-xl px-4 py-3">
+                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full mt-0.5 ${kyle ? 'bg-violet-100 text-violet-700' : 'bg-sky-100 text-sky-700'}`}>
+                      {kyle ? 'Kyle' : 'Kylie'}
+                    </span>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{tp.topic}</p>
+                      <p className="text-xs text-gray-500 leading-relaxed">{tp.insight}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
-        </div>
+        </Card>
 
         {/* Communication traits */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-          <h2 className="text-xs font-bold text-white/40 uppercase tracking-wider mb-4">Communication Traits</h2>
+        <Card title="Communication traits">
           <div className="flex flex-col gap-4">
-            <BarChart label="Directness" value={style.directness} color="bg-indigo-500" />
-            <BarChart label="Empathy Focus" value={style.empathy_focus} color="bg-pink-500" />
-            <BarChart label="Solution Orientation" value={style.solution_orientation} color="bg-indigo-500" />
-            <BarChart label="Collaborative Tendency" value={style.collaborative_tendency} color="bg-pink-500" />
+            <BarChart label="Directness" value={style.directness} color="bg-violet-500" />
+            <BarChart label="Empathy focus" value={style.empathy_focus} color="bg-sky-500" />
+            <BarChart label="Solution orientation" value={style.solution_orientation} color="bg-violet-500" />
+            <BarChart label="Collaborative tendency" value={style.collaborative_tendency} color="bg-sky-500" />
           </div>
-        </div>
+        </Card>
 
         {/* Personality insights */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-          <h2 className="text-xs font-bold text-white/40 uppercase tracking-wider mb-4">Personality Insights</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-xs text-white/30 font-semibold mb-1">Conflict Style</p>
-              <p className="text-sm text-white/70">{personality.conflict_style}</p>
-            </div>
-            <div>
-              <p className="text-xs text-white/30 font-semibold mb-1">Leadership Style</p>
-              <p className="text-sm text-white/70">{personality.leadership_style}</p>
-            </div>
-            <div>
-              <p className="text-xs text-white/30 font-semibold mb-1">Decision Making</p>
-              <p className="text-sm text-white/70">{personality.decision_making}</p>
-            </div>
-            <div>
-              <p className="text-xs text-white/30 font-semibold mb-1">Info Processing</p>
-              <p className="text-sm text-white/70">{personality.information_processing}</p>
-            </div>
-          </div>
-          <div className="mt-4">
-            <p className="text-xs text-white/30 font-semibold mb-2">Values in Communication</p>
-            <div className="flex flex-wrap gap-1.5">
-              {personality.values_in_communication.map(v => (
-                <span key={v} className="text-xs bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-full font-medium border border-purple-500/20">
-                  {v}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Trait comparison */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-          <h2 className="text-xs font-bold text-white/40 uppercase tracking-wider mb-4">Trait Breakdown</h2>
-          <div className="flex flex-col gap-3">
-            {chart.traits.map((t, i) => (
-              <div key={i}>
-                <BarChart label={t.trait} value={t.your_score} color="bg-gradient-to-r from-indigo-500 to-pink-500" />
-                <p className="text-xs text-white/30 mt-0.5">{t.description}</p>
+        <Card title="Personality insights">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {[
+              ['Conflict style', personality.conflict_style],
+              ['Leadership style', personality.leadership_style],
+              ['Decision making', personality.decision_making],
+              ['Information processing', personality.information_processing],
+            ].map(([label, text]) => (
+              <div key={label}>
+                <p className="text-xs font-semibold text-gray-400 mb-1">{label}</p>
+                <p className="text-sm text-gray-700 leading-relaxed">{text}</p>
               </div>
             ))}
           </div>
-        </div>
+          {personality.values_in_communication?.length > 0 && (
+            <div className="mt-5">
+              <p className="text-xs font-semibold text-gray-400 mb-2">Values in communication</p>
+              <div className="flex flex-wrap gap-1.5">
+                {personality.values_in_communication.map(v => (
+                  <span key={v} className="text-xs bg-violet-50 text-violet-700 px-2.5 py-1 rounded-full font-medium border border-violet-100">
+                    {v}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </Card>
+
+        {/* Trait comparison */}
+        {chart.traits?.length > 0 && (
+          <Card title="Trait breakdown">
+            <div className="flex flex-col gap-4">
+              {chart.traits.map((t, i) => (
+                <div key={i}>
+                  <BarChart label={t.trait} value={t.your_score} color="bg-gradient-to-r from-violet-500 to-sky-500" />
+                  <p className="text-xs text-gray-400 mt-1">{t.description}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        <p className="text-xs text-gray-400 text-center leading-relaxed">
+          This report describes your preference for a communication register. It does not infer anything about your gender &mdash; research finds the average difference between men and women on these features is small, and both registers are used by everyone.
+        </p>
 
         {/* CTA */}
-        <div className="text-center flex flex-col gap-4 pb-8">
+        <div className="text-center flex flex-col gap-3 pb-8">
           <Link
             href="/chat"
-            className="btn-primary text-white font-bold py-3 px-8 rounded-xl inline-block"
+            className="self-center bg-gray-900 text-white font-semibold text-sm py-2.5 px-8 rounded-xl hover:bg-gray-800 transition-colors shadow-sm"
           >
-            Start a new conversation →
+            Start a new conversation
           </Link>
-          <p className="text-xs text-white/30">Each conversation reveals different facets of your communication style.</p>
+          <p className="text-xs text-gray-400">Each conversation reveals different facets of your style.</p>
         </div>
       </main>
     </div>
