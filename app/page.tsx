@@ -33,7 +33,7 @@ export default function LandingPage() {
           </div>
 
           {/* Feature cards */}
-          <div className="grid grid-cols-3 gap-4 w-full mt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full mt-2">
             <div className="bg-white border border-gray-100 rounded-2xl p-5 text-left shadow-sm">
               <div className="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center mb-3">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
@@ -56,6 +56,38 @@ export default function LandingPage() {
               <p className="text-xs text-gray-400 leading-relaxed">Get personalized insights into your communication preferences.</p>
             </div>
           </div>
+
+          {/* Example — lets visitors see the idea before signing up */}
+          <section aria-labelledby="example-heading" className="w-full mt-2 text-left">
+            <p id="example-heading" className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2 text-center">
+              Example
+            </p>
+            <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+              <p className="text-sm text-gray-900 font-medium mb-4">
+                &ldquo;I missed a deadline. How do I tell my manager?&rdquo;
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="rounded-xl bg-violet-50/60 border border-violet-100 p-4">
+                  <p className="text-xs font-semibold text-violet-600 mb-1.5">Kyle</p>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Tell them before they find out. Lead with the facts: what slipped, why, and a new date you can
+                    actually hit. Bring one change that keeps it from happening again — that&rsquo;s what they&rsquo;ll remember.
+                  </p>
+                </div>
+                <div className="rounded-xl bg-sky-50/60 border border-sky-100 p-4">
+                  <p className="text-xs font-semibold text-sky-600 mb-1.5">Kylie</p>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    That&rsquo;s a stressful conversation, and it says a lot that you want to face it. Maybe start by
+                    acknowledging how it affects them and the team, then share what happened and a realistic new date.
+                    Asking what would help most right now can make it feel like you&rsquo;re solving it together.
+                  </p>
+                </div>
+              </div>
+              <p className="text-xs text-gray-400 mt-3 text-center">
+                Illustrative answers in each persona&rsquo;s style. Which one sounds more like you? Sign in to ask your own.
+              </p>
+            </div>
+          </section>
 
           {/* CTA */}
           <div className="flex flex-col items-center gap-3 mt-2">
